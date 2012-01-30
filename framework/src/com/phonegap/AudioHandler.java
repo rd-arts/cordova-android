@@ -316,7 +316,7 @@ public class AudioHandler extends Plugin {
      * @param output			1=earpiece, 2=speaker
      */
     public void setAudioOutputDevice(int output) {
-		AudioManager audiMgr = (AudioManager) this.ctx.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager audiMgr = (AudioManager) this.ctx.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
 		if (output == 2) {
 			audiMgr.setRouting(AudioManager.MODE_NORMAL, AudioManager.ROUTE_SPEAKER, AudioManager.ROUTE_ALL);
 		}
@@ -334,7 +334,7 @@ public class AudioHandler extends Plugin {
      * @return					1=earpiece, 2=speaker
      */
     public int getAudioOutputDevice() {
-		AudioManager audiMgr = (AudioManager) this.ctx.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager audiMgr = (AudioManager) this.ctx.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
 		if (audiMgr.getRouting(AudioManager.MODE_NORMAL) == AudioManager.ROUTE_EARPIECE) {
 			return 1;
 		}

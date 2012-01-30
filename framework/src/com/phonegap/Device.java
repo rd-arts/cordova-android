@@ -19,13 +19,10 @@
 package com.phonegap;
 
 import java.util.TimeZone;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.phonegap.api.LOG;
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +30,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+
+import com.phonegap.api.LOG;
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 
 public class Device extends Plugin {
     public static final String TAG = "Device";
@@ -55,7 +57,7 @@ public class Device extends Plugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
+	public void setContext(GapView ctx) {
 		super.setContext(ctx);
         Device.uuid = getUuid();
         this.initTelephonyReceiver();
@@ -109,7 +111,7 @@ public class Device extends Plugin {
      * Unregister receiver.
      */
     public void onDestroy() {
-        this.ctx.unregisterReceiver(this.telephonyReceiver);
+        this.ctx.getApplicationContext().unregisterReceiver(this.telephonyReceiver);
     }
 
     //--------------------------------------------------------------------------
@@ -124,7 +126,7 @@ public class Device extends Plugin {
     private void initTelephonyReceiver() {
         IntentFilter intentFilter = new IntentFilter() ;
         intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        final PhonegapActivity myctx = this.ctx;
+        final GapView myctx = this.ctx;
         this.telephonyReceiver = new BroadcastReceiver() {
             
             @Override
@@ -152,7 +154,7 @@ public class Device extends Plugin {
         };
         
         // Register the receiver
-        this.ctx.registerReceiver(this.telephonyReceiver, intentFilter);
+        this.ctx.getApplicationContext().getApplicationContext().registerReceiver(this.telephonyReceiver, intentFilter);
     }
 
 	/**
@@ -170,7 +172,7 @@ public class Device extends Plugin {
 	 * @return
 	 */
 	public String getUuid()	{		
-		String uuid = Settings.Secure.getString(this.ctx.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+		String uuid = Settings.Secure.getString(this.ctx.getApplicationContext().getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 		return uuid;
 	}
 

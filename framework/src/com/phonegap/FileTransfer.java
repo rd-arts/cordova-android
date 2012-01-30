@@ -426,7 +426,7 @@ public class FileTransfer extends Plugin {
     private InputStream getPathFromUri(String path) throws FileNotFoundException {
         if (path.startsWith("content:")) {
             Uri uri = Uri.parse(path);
-            return ctx.getContentResolver().openInputStream(uri);
+            return ctx.getApplicationContext().getContentResolver().openInputStream(uri);
         }
         else if (path.startsWith("file://")) {
             int question = path.indexOf("?");

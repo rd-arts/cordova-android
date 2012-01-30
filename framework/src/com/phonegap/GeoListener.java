@@ -53,7 +53,7 @@ public class GeoListener {
 		this.broker = broker;
 		this.mGps = null;
 		this.mNetwork = null;
-		this.mLocMan = (LocationManager) broker.ctx.getSystemService(Context.LOCATION_SERVICE);
+		this.mLocMan = (LocationManager) broker.ctx.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
 		// If GPS provider, then create and start GPS listener
 		if (this.mLocMan.getProvider(LocationManager.GPS_PROVIDER) != null) {

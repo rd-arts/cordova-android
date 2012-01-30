@@ -20,9 +20,7 @@ package com.phonegap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.PluginResult;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,6 +29,9 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Vibrator;
+
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 
 /**
  * This class provides access to notifications on the device.
@@ -143,7 +144,7 @@ public class Notification extends Plugin {
 	 */
 	public void beep(long count) {
 		Uri ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		Ringtone notification = RingtoneManager.getRingtone(this.ctx, ringtone);
+		Ringtone notification = RingtoneManager.getRingtone(this.ctx.getApplicationContext(), ringtone);
 		
 		// If phone is not set to silent mode
 		if (notification != null) {
@@ -171,7 +172,7 @@ public class Notification extends Plugin {
 		if (time == 0) {
 			time = 500;
 		}
-        Vibrator vibrator = (Vibrator) this.ctx.getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) this.ctx.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(time);
 	}
 	
@@ -184,13 +185,13 @@ public class Notification extends Plugin {
 	 */
 	public synchronized void alert(final String message, final String title, final String buttonLabel, final String callbackId) {
 
-		final PhonegapActivity ctx = this.ctx;
+		final GapView ctx = this.ctx;
 		final Notification notification = this;
 		
 		Runnable runnable = new Runnable() {
 			public void run() {
 		
-				AlertDialog.Builder dlg = new AlertDialog.Builder(ctx);
+				AlertDialog.Builder dlg = new AlertDialog.Builder(ctx.getApplicationContext());
 				dlg.setMessage(message);
 				dlg.setTitle(title);
 				dlg.setCancelable(false);
@@ -205,7 +206,7 @@ public class Notification extends Plugin {
 				dlg.show();
 			};
 		};
-		this.ctx.runOnUiThread(runnable);
+		this.ctx.post(runnable);
 	}
 
 	/**
@@ -220,13 +221,13 @@ public class Notification extends Plugin {
 	 */
 	public synchronized void confirm(final String message, final String title, String buttonLabels, final String callbackId) {
 
-		final PhonegapActivity ctx = this.ctx;
+		final GapView ctx = this.ctx;
 		final Notification notification = this;
 		final String[] fButtons = buttonLabels.split(",");
 
 		Runnable runnable = new Runnable() {
 			public void run() {
-				AlertDialog.Builder dlg = new AlertDialog.Builder(ctx);
+				AlertDialog.Builder dlg = new AlertDialog.Builder(ctx.getApplicationContext());
 				dlg.setMessage(message);
 				dlg.setTitle(title);
 				dlg.setCancelable(false);
@@ -269,7 +270,7 @@ public class Notification extends Plugin {
 				dlg.show();
 			};
 		};
-		this.ctx.runOnUiThread(runnable);
+		this.ctx.post(runnable);
 	}
 
 	/**
@@ -284,10 +285,10 @@ public class Notification extends Plugin {
 			this.spinnerDialog = null;
 		}
 		final Notification notification = this;
-		final PhonegapActivity ctx = this.ctx;
+		final GapView ctx = this.ctx;
 		Runnable runnable = new Runnable() {
 			public void run() {
-				notification.spinnerDialog = ProgressDialog.show(ctx, title , message, true, true, 
+				notification.spinnerDialog = ProgressDialog.show(ctx.getApplicationContext(), title , message, true, true, 
 					new DialogInterface.OnCancelListener() { 
 						public void onCancel(DialogInterface dialog) {
 							notification.spinnerDialog = null;
@@ -295,7 +296,7 @@ public class Notification extends Plugin {
 					});
 				}
 			};
-		this.ctx.runOnUiThread(runnable);
+		this.ctx.post(runnable);
 	}
 	
 	/**
@@ -320,10 +321,10 @@ public class Notification extends Plugin {
 			this.progressDialog = null;
 		}
 		final Notification notification = this;
-		final PhonegapActivity ctx = this.ctx;
+		final GapView ctx = this.ctx;
 		Runnable runnable = new Runnable() {
 			public void run() {
-				notification.progressDialog = new ProgressDialog(ctx);
+				notification.progressDialog = new ProgressDialog(ctx.getApplicationContext());
 				notification.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 				notification.progressDialog.setTitle(title);
 				notification.progressDialog.setMessage(message);
@@ -339,7 +340,7 @@ public class Notification extends Plugin {
 				notification.progressDialog.show();
 			}
 		};
-		this.ctx.runOnUiThread(runnable);
+		this.ctx.post(runnable);
 	}
 	
 	/**

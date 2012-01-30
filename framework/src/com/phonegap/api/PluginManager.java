@@ -29,8 +29,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
-import android.util.Log;
 import android.webkit.WebView;
+
+import com.phonegap.GapView;
 
 /**
  * PluginManager is exposed to JavaScript in the PhoneGap WebView.
@@ -43,8 +44,7 @@ public final class PluginManager {
 	private HashMap<String, IPlugin> plugins = new HashMap<String,IPlugin>();
 	private HashMap<String, String> services = new HashMap<String,String>();
 	
-	private final PhonegapActivity ctx;
-	private final WebView app;
+	private final GapView ctx;
 	
     // Map URL schemes like foo: to plugins that want to handle those schemes
     // This would allow how all URLs are handled to be offloaded to a plugin
@@ -56,9 +56,8 @@ public final class PluginManager {
 	 * @param app
 	 * @param ctx
 	 */
-	public PluginManager(WebView app, PhonegapActivity ctx) {
+	public PluginManager(GapView ctx) {
 		this.ctx = ctx;
-		this.app = app;
 		this.loadPlugins();
 	}
 	
@@ -77,7 +76,7 @@ public final class PluginManager {
 	 * Load plugins from res/xml/plugins.xml
 	 */
 	public void loadPlugins() {
-		int id = ctx.getResources().getIdentifier("plugins", "xml", ctx.getPackageName());
+		int id = ctx.getResources().getIdentifier("plugins", "xml", ctx.getApplicationContext().getPackageName());
 		if (id == 0) { pluginConfigurationMissing(); }
 		XmlResourceParser xml = ctx.getResources().getXml(id);
 		int eventType = -1;
@@ -138,7 +137,7 @@ public final class PluginManager {
 		try {
 			final JSONArray args = new JSONArray(jsonArgs);
 			final IPlugin plugin = this.getPlugin(service); 
-			final PhonegapActivity ctx = this.ctx;
+			final GapView ctx = this.ctx;
 			if (plugin != null) {
 				runAsync = async && !plugin.isSynch(action);
 				if (runAsync) {
@@ -243,7 +242,7 @@ public final class PluginManager {
 				IPlugin plugin = (IPlugin)c.newInstance();
 				this.plugins.put(className, plugin);
 				plugin.setContext(this.ctx);
-				plugin.setView(this.app);
+				plugin.setView(this.ctx);
 				return plugin;
 			}
     	} catch (Exception e) {

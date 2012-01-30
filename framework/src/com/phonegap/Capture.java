@@ -195,7 +195,7 @@ public class Capture extends Plugin {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Specify file so that large image is captured and returned
-        File photo = new File(DirectoryManager.getTempDirectoryPath(ctx),  "Capture.jpg");
+        File photo = new File(DirectoryManager.getTempDirectoryPath(ctx.getApplicationContext()),  "Capture.jpg");
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
         this.imageUri = Uri.fromFile(photo);
 
@@ -248,11 +248,11 @@ public class Capture extends Plugin {
                 try {
                     // Create an ExifHelper to save the exif data that is lost during compression
                     ExifHelper exif = new ExifHelper();
-                    exif.createInFile(DirectoryManager.getTempDirectoryPath(ctx) + "/Capture.jpg");
+                    exif.createInFile(DirectoryManager.getTempDirectoryPath(ctx.getApplicationContext()) + "/Capture.jpg");
                     exif.readExifData();
                     
                     // Read in bitmap of captured image
-                    Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(this.ctx.getContentResolver(), imageUri);
+                    Bitmap bitmap = android.provider.MediaStore.Images.Media.getBitmap(this.ctx.getApplicationContext().getContentResolver(), imageUri);
 
                     // Create entry in media store for image
                     // (Don't use insertImage() because it uses default compression setting of 50 - no way to change it)
@@ -260,11 +260,11 @@ public class Capture extends Plugin {
                     values.put(android.provider.MediaStore.Images.Media.MIME_TYPE, IMAGE_JPEG);
                     Uri uri = null;
                     try {
-                        uri = this.ctx.getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                        uri = this.ctx.getApplicationContext().getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                     } catch (UnsupportedOperationException e) {
                         LOG.d(LOG_TAG, "Can't write to external media storage.");
                         try {
-                            uri = this.ctx.getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
+                            uri = this.ctx.getApplicationContext().getContentResolver().insert(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
                         } catch (UnsupportedOperationException ex) {
                             LOG.d(LOG_TAG, "Can't write to internal media storage.");                           
                             this.fail(createErrorObject(CAPTURE_INTERNAL_ERR, "Error capturing image - no media storage found."));
@@ -273,7 +273,7 @@ public class Capture extends Plugin {
                     }
 
                     // Add compressed version of captured image to returned media store Uri
-                    OutputStream os  = this.ctx.getContentResolver().openOutputStream(uri);
+                    OutputStream os  = this.ctx.getApplicationContext().getContentResolver().openOutputStream(uri);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.close();
 

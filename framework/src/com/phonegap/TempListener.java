@@ -22,15 +22,14 @@ import java.util.List;
 
 import org.json.JSONArray;
 
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.content.Context;
+
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 
 public class TempListener extends Plugin implements SensorEventListener {
 	
@@ -49,9 +48,9 @@ public class TempListener extends Plugin implements SensorEventListener {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
+	public void setContext(GapView ctx) {
 		super.setContext(ctx);
-        this.sensorManager = (SensorManager) ctx.getSystemService(Context.SENSOR_SERVICE);
+        this.sensorManager = (SensorManager) ctx.getApplicationContext().getSystemService(Context.SENSOR_SERVICE);
 	}
 
 	/**

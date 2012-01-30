@@ -19,8 +19,11 @@
 package com.phonegap.api;
 
 import org.json.JSONArray;
+
 import android.content.Intent;
 import android.webkit.WebView;
+
+import com.phonegap.GapView;
 
 /**
  * Plugin interface must be implemented by any plugin classes.
@@ -53,7 +56,7 @@ public interface IPlugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	void setContext(PhonegapActivity ctx);
+	void setContext(GapView ctx);
 
 	/**
 	 * Sets the main View of the application, this is the WebView within which 

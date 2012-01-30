@@ -18,13 +18,11 @@ package com.phonegap;
 
 import java.util.HashMap;
 
-import android.app.Activity;
-import android.util.Log;
-import android.webkit.WebView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 /**
  * This abstract class defines SDK-independent API for communication with
@@ -36,8 +34,7 @@ import org.json.JSONObject;
 public abstract class ContactAccessor {
   
     protected final String LOG_TAG = "ContactsAccessor";
-    protected Activity mApp;
-    protected WebView mView;
+    protected GapView mCtxt;
   
     /**
      * Check to see if the data associated with the key is required to 

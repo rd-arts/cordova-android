@@ -20,10 +20,6 @@ package com.phonegap;
 
 import org.json.JSONArray;
 
-import com.phonegap.api.PhonegapActivity;
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +27,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.phonegap.api.Plugin;
+import com.phonegap.api.PluginResult;
 
 public class NetworkManager extends Plugin {
     
@@ -87,9 +86,9 @@ public class NetworkManager extends Plugin {
      * 
      * @param ctx The context of the main Activity.
      */
-    public void setContext(PhonegapActivity ctx) {
+    public void setContext(GapView ctx) {
         super.setContext(ctx);
-        this.sockMan = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);        
+        this.sockMan = (ConnectivityManager) ctx.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);        
         this.connectionCallbackId = null;
         
         // We need to listen to connectivity events to update navigator.connection
@@ -102,7 +101,7 @@ public class NetworkManager extends Plugin {
                     updateConnectionInfo((NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO));                
                 }
             };
-            ctx.registerReceiver(this.receiver, intentFilter);
+            ctx.getApplicationContext().getApplicationContext().registerReceiver(this.receiver, intentFilter);
         }
 
     }
@@ -147,7 +146,7 @@ public class NetworkManager extends Plugin {
     public void onDestroy() {
         if (this.receiver != null) {
             try {
-                this.ctx.unregisterReceiver(this.receiver);
+                this.ctx.getApplicationContext().unregisterReceiver(this.receiver);
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error unregistering network receiver: " + e.getMessage(), e);
             }

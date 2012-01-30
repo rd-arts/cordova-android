@@ -18,7 +18,18 @@
 */
 package com.phonegap;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -33,10 +44,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.phonegap.api.PhonegapActivity;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 import com.phonegap.file.EncodingException;
@@ -238,7 +247,7 @@ public class FileUtils extends Plugin {
      * @param filePath the path to check
      */
     private void notifyDelete(String filePath) {
-        int result = this.ctx.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        int result = this.ctx.getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 MediaStore.Images.Media.DATA + " = ?",
                 new String[] {filePath});
     }
@@ -729,7 +738,7 @@ public class FileUtils extends Plugin {
      * @return true if we are at the root, false otherwise.
      */
     private boolean atRootDirectory(String filePath) {
-        if (filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + ctx.getPackageName() + "/cache") ||
+        if (filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + ctx.getApplicationContext().getPackageName() + "/cache") ||
                 filePath.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
             return true;
         }
@@ -796,11 +805,11 @@ public class FileUtils extends Plugin {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 fs.put("name", "temporary");
                 fs.put("root", getEntry(Environment.getExternalStorageDirectory().getAbsolutePath() +
-                        "/Android/data/" + ctx.getPackageName() + "/cache/"));
+                        "/Android/data/" + ctx.getApplicationContext().getPackageName() + "/cache/"));
 
                 // Create the cache dir if it doesn't exist.
                 File fp = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    "/Android/data/" + ctx.getPackageName() + "/cache/");
+                    "/Android/data/" + ctx.getApplicationContext().getPackageName() + "/cache/");
                 fp.mkdirs();
             } else {
                 throw new IOException("SD Card not mounted");
@@ -926,7 +935,7 @@ public class FileUtils extends Plugin {
         String contentType = null;
         if (filename.startsWith("content:")) {
             Uri fileUri = Uri.parse(filename);
-            contentType = this.ctx.getContentResolver().getType(fileUri);
+            contentType = this.ctx.getApplicationContext().getContentResolver().getType(fileUri);
         }
         else {
             contentType = getMimeType(filename);
@@ -1005,7 +1014,7 @@ public class FileUtils extends Plugin {
     private InputStream getPathFromUri(String path) throws FileNotFoundException {
         if (path.startsWith("content")) {
             Uri uri = Uri.parse(path);
-            return ctx.getContentResolver().openInputStream(uri);
+            return ctx.getApplicationContext().getContentResolver().openInputStream(uri);
         }
         else {
             return new FileInputStream(path);
@@ -1019,7 +1028,7 @@ public class FileUtils extends Plugin {
      * @param ctx the current applicaiton context
      * @return the full path to the file
      */
-    protected static String getRealPathFromURI(Uri contentUri, PhonegapActivity ctx) {
+    protected static String getRealPathFromURI(Uri contentUri, GapView ctx) {
         String[] proj = { _DATA };
         Cursor cursor = ctx.managedQuery(contentUri, proj, null, null, null);
         int column_index = cursor.getColumnIndexOrThrow(_DATA);

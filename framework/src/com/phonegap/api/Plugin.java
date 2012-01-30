@@ -24,6 +24,8 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.webkit.WebView;
 
+import com.phonegap.GapView;
+
 /**
  * Plugin interface must be implemented by any plugin classes.
  *
@@ -33,7 +35,7 @@ public abstract class Plugin implements IPlugin {
 
 	public String id;
     public WebView webView;					// WebView object
-    public PhonegapActivity ctx;			// PhonegapActivity object
+    public GapView ctx;			// PhonegapActivity object
 
 	/**
 	 * Executes the request and returns PluginResult.
@@ -61,7 +63,7 @@ public abstract class Plugin implements IPlugin {
 	 * 
 	 * @param ctx The context of the main Activity.
 	 */
-	public void setContext(PhonegapActivity ctx) {
+	public void setContext(GapView ctx) {
 		this.ctx = ctx;
 	}
 

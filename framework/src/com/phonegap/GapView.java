@@ -45,6 +45,8 @@ import com.phonegap.api.PluginManager;
 public class GapView extends WebView {
 
 	public static final String TAG = "GapView";
+	
+	private MenuController mMenuController;
 
 	private Activity mActivity;
 	private boolean classicRender;
@@ -85,6 +87,13 @@ public class GapView extends WebView {
 		loadConfiguration();
 		init();
 		LOG.d(TAG, "GapView Contructor");
+	}
+	
+	public void setMenuController(MenuController menuController){
+		mMenuController = menuController;
+	}
+	public MenuController getMenuController(){
+		return mMenuController;
 	}
 	
 	public void resetLoadUrlTimeout(){
